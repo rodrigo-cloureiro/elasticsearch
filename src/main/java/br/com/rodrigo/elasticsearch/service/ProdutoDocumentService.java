@@ -80,6 +80,28 @@ public class ProdutoDocumentService {
         }
     }
 
+    public List<ProdutoDocument> buscarPorNomeComTolerancia(String nome) {
+        try {
+            SearchResponse<ProdutoDocument> response = client.search(s -> s
+                    .query(q -> q
+                            .fuzzy(f -> f
+                                    .field("nome")
+                                    .value(nome)
+                                    .fuzziness("AUTO")
+                            )
+                    ), ProdutoDocument.class
+            );
+
+            return response.hits()
+                    .hits()
+                    .stream()
+                    .map(Hit::source)
+                    .toList();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public List<ProdutoDocument> buscarPorFaixaPreco(double min, double max) {
         try {
             SearchResponse<ProdutoDocument> response = client.search(s -> s

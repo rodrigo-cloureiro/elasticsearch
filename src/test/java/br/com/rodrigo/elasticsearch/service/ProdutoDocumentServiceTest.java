@@ -48,6 +48,16 @@ public class ProdutoDocumentServiceTest {
     }
 
     @Test
+    void buscarPorNomeComTolerancia() {
+        List<ProdutoDocument> result = service.buscarPorNomeComTolerancia("espdaa");
+        assertFalse(result.isEmpty());
+        result.forEach(r -> assertTrue(r.getNome()
+                .toLowerCase()
+                .contains("espada")
+        ));
+    }
+
+    @Test
     void buscarPorFaixaPreco() throws IOException {
         service.buscarPorFaixaPreco(100, 150)
                 .forEach(System.out::println);

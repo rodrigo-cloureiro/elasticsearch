@@ -41,6 +41,14 @@ public class ProdutoDocumentController {
                 .body(produtoDocumentService.buscarPorFraseExata(termo));
     }
 
+    @GetMapping(value = "/fuzzy")
+    public ResponseEntity<List<ProdutoDocument>> buscarPorNomeComTolerancia(
+            @RequestParam(value = "termo") String termo
+    ) {
+        return ResponseEntity.ok()
+                .body(produtoDocumentService.buscarPorNomeComTolerancia(termo));
+    }
+
     @GetMapping(value = "/faixa-preco")
     public ResponseEntity<List<ProdutoDocument>> buscarPorFaixaPreco(
             @RequestParam(name = "min", defaultValue = "0") double min,
