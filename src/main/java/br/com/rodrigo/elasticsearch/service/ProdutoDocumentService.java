@@ -1,8 +1,8 @@
 package br.com.rodrigo.elasticsearch.service;
 
+import br.com.rodrigo.elasticsearch.dto.CategoriaAggregation;
 import br.com.rodrigo.elasticsearch.model.ProdutoDocument;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.TermQuery;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
@@ -210,6 +210,32 @@ public class ProdutoDocumentService {
                     .hits()
                     .stream()
                     .map(Hit::source)
+                    .toList();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<CategoriaAggregation> quantidadeProdutosPorCategoria() {
+        try {
+            SearchResponse<ProdutoDocument> response = client.search(s -> s
+                    .aggregations("por_categoria", a -> a
+                            .terms(t -> t
+                                    .field("categoria")
+                            )
+                    ), ProdutoDocument.class
+            );
+
+            return response.aggregations()
+                    .get("por_categoria")
+                    .sterms()
+                    .buckets()
+                    .array()
+                    .stream()
+                    .map(bucket -> new CategoriaAggregation(
+                            bucket.key().stringValue(),
+                            bucket.docCount()
+                    ))
                     .toList();
         } catch (IOException e) {
             throw new RuntimeException(e);
