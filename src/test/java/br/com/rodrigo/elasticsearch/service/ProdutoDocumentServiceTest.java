@@ -83,6 +83,23 @@ public class ProdutoDocumentServiceTest {
     }
 
     @Test
+    void buscarPorDescricaoECategoria() {
+        String descricao = "antiga";
+        String categoria = "ingredientes";
+
+        List<ProdutoDocument> result = service.buscarPorDescricaoECategoria(descricao, categoria);
+        assertFalse(result.isEmpty());
+        assertTrue(result.stream()
+                .allMatch(r -> r
+                        .getDescricao()
+                        .toLowerCase()
+                        .contains(descricao.toLowerCase()) &&
+                        r.getCategoria()
+                                .equalsIgnoreCase(categoria))
+        );
+    }
+
+    @Test
     void buscarPorFaixaPreco() throws IOException {
         double min = 100;
         double max = 150;

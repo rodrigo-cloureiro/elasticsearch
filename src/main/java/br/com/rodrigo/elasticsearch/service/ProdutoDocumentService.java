@@ -124,6 +124,37 @@ public class ProdutoDocumentService {
         }
     }
 
+    public List<ProdutoDocument> buscarPorDescricaoECategoria(String descricao, String categoria) {
+        try {
+            SearchResponse<ProdutoDocument> response = client.search(s -> s
+                    .query(q -> q
+                            .bool(b -> b
+                                    .must(m -> m
+                                            .match(v -> v
+                                                    .field("descricao")
+                                                    .query(descricao)
+                                            )
+                                    )
+                                    .filter(f -> f
+                                            .term(t -> t
+                                                    .field("categoria")
+                                                    .value(categoria)
+                                            )
+                                    )
+                            )
+                    ), ProdutoDocument.class
+            );
+
+            return response.hits()
+                    .hits()
+                    .stream()
+                    .map(Hit::source)
+                    .toList();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public List<ProdutoDocument> buscarPorFaixaPreco(double min, double max) {
         try {
             SearchResponse<ProdutoDocument> response = client.search(s -> s

@@ -57,6 +57,15 @@ public class ProdutoDocumentController {
                 .body(produtoDocumentService.buscarPorNomeEDescricao(termo));
     }
 
+    @GetMapping(value = "/com-filtro")
+    public ResponseEntity<List<ProdutoDocument>> buscarPorDescricaoECategoria(
+            @RequestParam(name = "termo") String termo,
+            @RequestParam(name = "categoria") String categoria
+    ) {
+        return ResponseEntity.ok()
+                .body(produtoDocumentService.buscarPorDescricaoECategoria(termo, categoria));
+    }
+
     @GetMapping(value = "/faixa-preco")
     public ResponseEntity<List<ProdutoDocument>> buscarPorFaixaPreco(
             @RequestParam(name = "min", defaultValue = "0") double min,
