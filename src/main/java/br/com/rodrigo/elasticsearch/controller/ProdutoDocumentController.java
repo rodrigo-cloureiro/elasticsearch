@@ -74,4 +74,15 @@ public class ProdutoDocumentController {
         return ResponseEntity.ok()
                 .body(produtoDocumentService.buscarPorFaixaPreco(min, max));
     }
+
+    @GetMapping(value = "/avancada")
+    public ResponseEntity<List<ProdutoDocument>> buscaCombinada(
+            @RequestParam(name = "categoria") String categoria,
+            @RequestParam(name = "raridade") String raridade,
+            @RequestParam(name = "min") double min,
+            @RequestParam(name = "max") double max
+    ) {
+        return ResponseEntity.ok()
+                .body(produtoDocumentService.buscaCombinada(categoria, raridade, min, max));
+    }
 }

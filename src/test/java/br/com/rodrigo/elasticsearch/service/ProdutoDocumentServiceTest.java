@@ -100,7 +100,7 @@ public class ProdutoDocumentServiceTest {
     }
 
     @Test
-    void buscarPorFaixaPreco() throws IOException {
+    void buscarPorFaixaPreco() {
         double min = 100;
         double max = 150;
 
@@ -108,6 +108,25 @@ public class ProdutoDocumentServiceTest {
         assertFalse(result.isEmpty());
         assertTrue(result.stream()
                 .allMatch(p -> p.getPreco() >= min && p.getPreco() <= max)
+        );
+    }
+
+    @Test
+    void buscaCombinada() {
+        String categoria = "armas";
+        String raridade = "epico";
+        double min = 1_990;
+        double max = 2_010;
+
+        List<ProdutoDocument> result = service.buscaCombinada(categoria, raridade, min, max);
+        assertFalse(result.isEmpty());
+        assertTrue(result.stream()
+                .allMatch(r -> r.getCategoria()
+                        .equalsIgnoreCase(categoria) &&
+                        r.getRaridade()
+                                .equalsIgnoreCase(raridade) &&
+                        r.getPreco() >= min && r.getPreco() <= max
+                )
         );
     }
 }

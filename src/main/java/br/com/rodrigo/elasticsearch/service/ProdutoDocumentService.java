@@ -3,6 +3,8 @@ package br.com.rodrigo.elasticsearch.service;
 import br.com.rodrigo.elasticsearch.model.ProdutoDocument;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.SortOrder;
+import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.TermQuery;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import lombok.RequiredArgsConstructor;
@@ -173,6 +175,35 @@ public class ProdutoDocumentService {
                                     )
                             )*/,
                     ProdutoDocument.class
+            );
+
+            return response.hits()
+                    .hits()
+                    .stream()
+                    .map(Hit::source)
+                    .toList();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<ProdutoDocument> buscaCombinada(String categoria, String raridade, double min, double max) {
+        TermQuery categoriaTermQuery = TermQuery.of(t -> t.field("categoria").value(categoria));
+        TermQuery raridadeTermQuery = TermQuery.of(t -> t.field("raridade").value(raridade));
+        RangeQuery faixaPreco = RangeQuery.of(r -> r.number(n -> n.field("preco").gte(min).lte(max)));
+
+        try {
+            SearchResponse<ProdutoDocument> response = client.search(s -> s
+                    .query(q -> q
+                            .bool(b -> b
+                                    .filter(
+                                            categoriaTermQuery,
+                                            raridadeTermQuery,
+                                            faixaPreco
+                                    )
+                            )
+
+                    ), ProdutoDocument.class
             );
 
             return response.hits()
