@@ -24,4 +24,12 @@ public class ProdutoDocumentController {
         return ResponseEntity.ok()
                 .body(produtoDocumentService.buscarPorNome(termo));
     }
+
+    @GetMapping(value = "/descricao")
+    public ResponseEntity<List<ProdutoDocument>> buscarPorDescricaoProduto(
+            @RequestParam(name = "termo") String termo
+    ) {
+        return ResponseEntity.ok()
+                .body(produtoDocumentService.buscarPorDescricao(termo));
+    }
 }

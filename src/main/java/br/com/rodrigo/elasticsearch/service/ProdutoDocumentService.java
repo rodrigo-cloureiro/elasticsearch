@@ -37,4 +37,25 @@ public class ProdutoDocumentService {
             throw new RuntimeException(e);
         }
     }
+
+    public List<ProdutoDocument> buscarPorDescricao(String descricao) {
+        try {
+            SearchResponse<ProdutoDocument> response = client.search(s -> s
+                    .query(q -> q
+                            .match(m -> m
+                                    .field("descricao")
+                                    .query(descricao)
+                            )
+                    ), ProdutoDocument.class
+            );
+
+            return response.hits()
+                    .hits()
+                    .stream()
+                    .map(Hit::source)
+                    .toList();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

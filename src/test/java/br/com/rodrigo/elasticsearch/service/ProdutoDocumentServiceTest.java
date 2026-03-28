@@ -26,4 +26,14 @@ public class ProdutoDocumentServiceTest {
                 contains("espada")
         ));
     }
+
+    @Test
+    void buscarPorDescricao() {
+        List<ProdutoDocument> result = service.buscarPorDescricao("norte");
+        assertFalse(result.isEmpty());
+        result.forEach(r -> assertTrue(r.getDescricao()
+                .toLowerCase()
+                .contains("norte")
+        ));
+    }
 }
