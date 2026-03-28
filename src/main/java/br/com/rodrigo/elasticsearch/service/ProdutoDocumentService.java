@@ -1,6 +1,7 @@
 package br.com.rodrigo.elasticsearch.service;
 
 import br.com.rodrigo.elasticsearch.dto.CategoriaAggregation;
+import br.com.rodrigo.elasticsearch.dto.RaridadeAggregation;
 import br.com.rodrigo.elasticsearch.model.ProdutoDocument;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
@@ -233,6 +234,32 @@ public class ProdutoDocumentService {
                     .array()
                     .stream()
                     .map(bucket -> new CategoriaAggregation(
+                            bucket.key().stringValue(),
+                            bucket.docCount()
+                    ))
+                    .toList();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<RaridadeAggregation> quantidadeProdutosPorRaridade() {
+        try {
+            SearchResponse<ProdutoDocument> response = client.search(s -> s
+                    .aggregations("por_raridade", a -> a
+                            .terms(t -> t
+                                    .field("raridade")
+                            )
+                    ), ProdutoDocument.class
+            );
+
+            return response.aggregations()
+                    .get("por_raridade")
+                    .sterms()
+                    .buckets()
+                    .array()
+                    .stream()
+                    .map(bucket -> new RaridadeAggregation(
                             bucket.key().stringValue(),
                             bucket.docCount()
                     ))

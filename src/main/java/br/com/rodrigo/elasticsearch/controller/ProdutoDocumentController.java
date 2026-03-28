@@ -1,6 +1,7 @@
 package br.com.rodrigo.elasticsearch.controller;
 
 import br.com.rodrigo.elasticsearch.dto.CategoriaAggregation;
+import br.com.rodrigo.elasticsearch.dto.RaridadeAggregation;
 import br.com.rodrigo.elasticsearch.model.ProdutoDocument;
 import br.com.rodrigo.elasticsearch.service.ProdutoDocumentService;
 import lombok.RequiredArgsConstructor;
@@ -91,5 +92,11 @@ public class ProdutoDocumentController {
     public ResponseEntity<List<CategoriaAggregation>> quantidadeProdutosPorCategoria() {
         return ResponseEntity.ok()
                 .body(produtoDocumentService.quantidadeProdutosPorCategoria());
+    }
+
+    @GetMapping(value = "/agregacoes/por-raridade") // TODO separar os endpoints em /busca e /agregacoes
+    public ResponseEntity<List<RaridadeAggregation>> quantidadeProdutosPorRaridade() {
+        return ResponseEntity.ok()
+                .body(produtoDocumentService.quantidadeProdutosPorRaridade());
     }
 }

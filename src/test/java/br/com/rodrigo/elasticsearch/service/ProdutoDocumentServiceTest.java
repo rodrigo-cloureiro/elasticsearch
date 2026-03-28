@@ -1,6 +1,7 @@
 package br.com.rodrigo.elasticsearch.service;
 
 import br.com.rodrigo.elasticsearch.dto.CategoriaAggregation;
+import br.com.rodrigo.elasticsearch.dto.RaridadeAggregation;
 import br.com.rodrigo.elasticsearch.model.ProdutoDocument;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,6 +133,13 @@ public class ProdutoDocumentServiceTest {
     @Test
     void quantidadeProdutosPorCategoria() {
         List<CategoriaAggregation> result = service.quantidadeProdutosPorCategoria();
+        assertFalse(result.isEmpty());
+        assertTrue(result.stream().allMatch(r -> r.quantidade() >= 0));
+    }
+
+    @Test
+    void quantidadeProdutosPorRaridade() {
+        List<RaridadeAggregation> result = service.quantidadeProdutosPorRaridade();
         assertFalse(result.isEmpty());
         assertTrue(result.stream().allMatch(r -> r.quantidade() >= 0));
     }
