@@ -40,4 +40,13 @@ public class ProdutoDocumentController {
         return ResponseEntity.ok()
                 .body(produtoDocumentService.buscarPorFraseExata(termo));
     }
+
+    @GetMapping(value = "/faixa-preco")
+    public ResponseEntity<List<ProdutoDocument>> buscarPorFaixaPreco(
+            @RequestParam(name = "min", defaultValue = "0") double min,
+            @RequestParam(name = "max", defaultValue = "100") double max
+    ) {
+        return ResponseEntity.ok()
+                .body(produtoDocumentService.buscarPorFaixaPreco(min, max));
+    }
 }

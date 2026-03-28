@@ -79,4 +79,34 @@ public class ProdutoDocumentService {
             throw new RuntimeException(e);
         }
     }
+
+    public List<ProdutoDocument> buscarPorFaixaPreco(double min, double max) {
+        try {
+            SearchResponse<ProdutoDocument> response = client.search(s -> s
+                            .query(q -> q
+                                    .range(r -> r
+                                            .number(n -> n
+                                                    .field("preco")
+                                                    .gte(min)
+                                                    .lte(max)
+                                            )
+                                    )
+                            )/*.sort(so -> so
+                                    .field(f -> f
+                                            .field("preco")
+                                            .order(SortOrder.Asc)
+                                    )
+                            )*/,
+                    ProdutoDocument.class
+            );
+
+            return response.hits()
+                    .hits()
+                    .stream()
+                    .map(Hit::source)
+                    .toList();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

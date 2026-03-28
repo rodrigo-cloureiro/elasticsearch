@@ -46,4 +46,10 @@ public class ProdutoDocumentServiceTest {
                 .contains("artefato raro")
         ));
     }
+
+    @Test
+    void buscarPorFaixaPreco() throws IOException {
+        service.buscarPorFaixaPreco(100, 150)
+                .forEach(System.out::println);
+    }
 }
