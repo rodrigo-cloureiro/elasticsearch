@@ -49,6 +49,14 @@ public class ProdutoDocumentController {
                 .body(produtoDocumentService.buscarPorNomeComTolerancia(termo));
     }
 
+    @GetMapping(value = "/multicampos")
+    public ResponseEntity<List<ProdutoDocument>> buscarPorNomeEDescricao(
+            @RequestParam(name = "termo") String termo
+    ) {
+        return ResponseEntity.ok()
+                .body(produtoDocumentService.buscarPorNomeEDescricao(termo));
+    }
+
     @GetMapping(value = "/faixa-preco")
     public ResponseEntity<List<ProdutoDocument>> buscarPorFaixaPreco(
             @RequestParam(name = "min", defaultValue = "0") double min,
