@@ -1,6 +1,7 @@
 package br.com.rodrigo.elasticsearch.service;
 
 import br.com.rodrigo.elasticsearch.dto.CategoriaAggregation;
+import br.com.rodrigo.elasticsearch.dto.PrecoMedioAggregation;
 import br.com.rodrigo.elasticsearch.dto.RaridadeAggregation;
 import br.com.rodrigo.elasticsearch.model.ProdutoDocument;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
@@ -264,6 +265,25 @@ public class ProdutoDocumentService {
                             bucket.docCount()
                     ))
                     .toList();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public PrecoMedioAggregation precoMedioProdutos() {
+        try {
+            SearchResponse<ProdutoDocument> response = client.search(s -> s
+                    .aggregations("preco_medio", a -> a
+                            .avg(avg -> avg
+                                    .field("preco"))
+                    ), ProdutoDocument.class
+            );
+
+            return new PrecoMedioAggregation(response.aggregations()
+                    .get("preco_medio")
+                    .avg()
+                    .value()
+            );
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -1,6 +1,7 @@
 package br.com.rodrigo.elasticsearch.service;
 
 import br.com.rodrigo.elasticsearch.dto.CategoriaAggregation;
+import br.com.rodrigo.elasticsearch.dto.PrecoMedioAggregation;
 import br.com.rodrigo.elasticsearch.dto.RaridadeAggregation;
 import br.com.rodrigo.elasticsearch.model.ProdutoDocument;
 import org.junit.jupiter.api.Test;
@@ -9,8 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class ProdutoDocumentServiceTest {
@@ -142,5 +142,12 @@ public class ProdutoDocumentServiceTest {
         List<RaridadeAggregation> result = service.quantidadeProdutosPorRaridade();
         assertFalse(result.isEmpty());
         assertTrue(result.stream().allMatch(r -> r.quantidade() >= 0));
+    }
+
+    @Test
+    void precoMedioProdutos() {
+        PrecoMedioAggregation result = service.precoMedioProdutos();
+        assertNotNull(result.precoMedio());
+        assertTrue(result.precoMedio() >= 0);
     }
 }
