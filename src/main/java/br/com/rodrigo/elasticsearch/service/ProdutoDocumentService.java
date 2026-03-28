@@ -58,4 +58,25 @@ public class ProdutoDocumentService {
             throw new RuntimeException(e);
         }
     }
+
+    public List<ProdutoDocument> buscarPorFraseExata(String descricaoExata) {
+        try {
+            SearchResponse<ProdutoDocument> response = client.search(s -> s
+                    .query(q -> q
+                            .matchPhrase(mp -> mp
+                                    .field("descricao")
+                                    .query(descricaoExata)
+                            )
+                    ), ProdutoDocument.class
+            );
+
+            return response.hits()
+                    .hits()
+                    .stream()
+                    .map(Hit::source)
+                    .toList();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

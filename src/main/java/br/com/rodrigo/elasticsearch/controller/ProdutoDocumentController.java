@@ -32,4 +32,12 @@ public class ProdutoDocumentController {
         return ResponseEntity.ok()
                 .body(produtoDocumentService.buscarPorDescricao(termo));
     }
+
+    @GetMapping(value = "/frase")
+    public ResponseEntity<List<ProdutoDocument>> buscarPorFraseExata(
+            @RequestParam(name = "termo") String termo
+    ) {
+        return ResponseEntity.ok()
+                .body(produtoDocumentService.buscarPorFraseExata(termo));
+    }
 }

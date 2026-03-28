@@ -36,4 +36,14 @@ public class ProdutoDocumentServiceTest {
                 .contains("norte")
         ));
     }
+
+    @Test
+    void buscarPorFraseExata() {
+        List<ProdutoDocument> result = service.buscarPorFraseExata("artefato raro");
+        assertFalse(result.isEmpty());
+        result.forEach(r -> assertTrue(r.getDescricao()
+                .toLowerCase()
+                .contains("artefato raro")
+        ));
+    }
 }
