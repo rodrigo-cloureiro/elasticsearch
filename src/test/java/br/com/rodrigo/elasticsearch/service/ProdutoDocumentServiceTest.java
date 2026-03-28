@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -19,47 +20,62 @@ public class ProdutoDocumentServiceTest {
 
     @Test
     void buscarPorNome() {
-        List<ProdutoDocument> result = service.buscarPorNome("Espada");
+        String termo = "Espada";
+
+        List<ProdutoDocument> result = service.buscarPorNome(termo);
         assertFalse(result.isEmpty());
         result.forEach(r -> assertTrue(r.getNome()
                 .toLowerCase().
-                contains("espada")
+                contains(termo.toLowerCase())
         ));
     }
 
     @Test
     void buscarPorDescricao() {
-        List<ProdutoDocument> result = service.buscarPorDescricao("norte");
+        String termo = "norte";
+
+        List<ProdutoDocument> result = service.buscarPorDescricao(termo);
         assertFalse(result.isEmpty());
         result.forEach(r -> assertTrue(r.getDescricao()
                 .toLowerCase()
-                .contains("norte")
+                .contains(termo)
         ));
     }
 
     @Test
     void buscarPorFraseExata() {
-        List<ProdutoDocument> result = service.buscarPorFraseExata("artefato raro");
+        String termo = "artefato raro";
+
+        List<ProdutoDocument> result = service.buscarPorFraseExata(termo);
         assertFalse(result.isEmpty());
         result.forEach(r -> assertTrue(r.getDescricao()
                 .toLowerCase()
-                .contains("artefato raro")
+                .contains(termo)
         ));
     }
 
     @Test
     void buscarPorNomeComTolerancia() {
-        List<ProdutoDocument> result = service.buscarPorNomeComTolerancia("espdaa");
+        String fuzzy = "espdaa";
+        String termo = "espada";
+
+        List<ProdutoDocument> result = service.buscarPorNomeComTolerancia(fuzzy);
         assertFalse(result.isEmpty());
         result.forEach(r -> assertTrue(r.getNome()
                 .toLowerCase()
-                .contains("espada")
+                .contains(termo)
         ));
     }
 
     @Test
     void buscarPorFaixaPreco() throws IOException {
-        service.buscarPorFaixaPreco(100, 150)
-                .forEach(System.out::println);
+        double min = 100;
+        double max = 150;
+
+        List<ProdutoDocument> result = service.buscarPorFaixaPreco(min, max);
+        assertFalse(result.isEmpty());
+        assertTrue(result.stream()
+                .allMatch(p -> p.getPreco() >= min && p.getPreco() <= max)
+        );
     }
 }
