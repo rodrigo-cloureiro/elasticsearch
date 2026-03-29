@@ -1,6 +1,7 @@
 package br.com.rodrigo.elasticsearch.controller;
 
 import br.com.rodrigo.elasticsearch.dto.CategoriaAggregation;
+import br.com.rodrigo.elasticsearch.dto.FaixaPreco;
 import br.com.rodrigo.elasticsearch.dto.PrecoMedioAggregation;
 import br.com.rodrigo.elasticsearch.dto.RaridadeAggregation;
 import br.com.rodrigo.elasticsearch.model.ProdutoDocument;
@@ -18,6 +19,7 @@ import java.util.List;
 @RequestMapping(value = "/produtos/busca")
 @RequiredArgsConstructor
 public class ProdutoDocumentController {
+
     private final ProdutoDocumentService produtoDocumentService;
 
     @GetMapping(value = "/nome")
@@ -105,5 +107,11 @@ public class ProdutoDocumentController {
     public ResponseEntity<PrecoMedioAggregation> precoMedioProdutos() {
         return ResponseEntity.ok()
                 .body(produtoDocumentService.precoMedioProdutos());
+    }
+
+    @GetMapping(value = "/agregacoes/faixas-preco") // TODO separar os endpoints em /busca e /agregacoes
+    public ResponseEntity<List<FaixaPreco>> agruparEmFaixaPreco() {
+        return ResponseEntity.ok()
+                .body(produtoDocumentService.agruparEmFaixaPreco());
     }
 }

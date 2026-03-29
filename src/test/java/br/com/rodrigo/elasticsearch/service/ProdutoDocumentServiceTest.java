@@ -1,6 +1,7 @@
 package br.com.rodrigo.elasticsearch.service;
 
 import br.com.rodrigo.elasticsearch.dto.CategoriaAggregation;
+import br.com.rodrigo.elasticsearch.dto.FaixaPreco;
 import br.com.rodrigo.elasticsearch.dto.PrecoMedioAggregation;
 import br.com.rodrigo.elasticsearch.dto.RaridadeAggregation;
 import br.com.rodrigo.elasticsearch.model.ProdutoDocument;
@@ -149,5 +150,11 @@ public class ProdutoDocumentServiceTest {
         PrecoMedioAggregation result = service.precoMedioProdutos();
         assertNotNull(result.precoMedio());
         assertTrue(result.precoMedio() >= 0);
+    }
+
+    @Test
+    void agruparEmFaixaPreco() {
+        List<FaixaPreco> result = service.agruparEmFaixaPreco();
+        assertFalse(result.isEmpty());
     }
 }
