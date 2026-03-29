@@ -1,9 +1,5 @@
 package br.com.rodrigo.elasticsearch.controller;
 
-import br.com.rodrigo.elasticsearch.dto.CategoriaAggregation;
-import br.com.rodrigo.elasticsearch.dto.FaixaPreco;
-import br.com.rodrigo.elasticsearch.dto.PrecoMedioAggregation;
-import br.com.rodrigo.elasticsearch.dto.RaridadeAggregation;
 import br.com.rodrigo.elasticsearch.model.ProdutoDocument;
 import br.com.rodrigo.elasticsearch.service.ProdutoDocumentService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/produtos/busca")
 @RequiredArgsConstructor
-public class ProdutoDocumentController {
+public class ProdutoDocumentSearchController {
 
     private final ProdutoDocumentService produtoDocumentService;
 
@@ -89,29 +85,5 @@ public class ProdutoDocumentController {
     ) {
         return ResponseEntity.ok()
                 .body(produtoDocumentService.buscaCombinada(categoria, raridade, min, max));
-    }
-
-    @GetMapping(value = "/agregacoes/por-categoria") // TODO separar os endpoints em /busca e /agregacoes
-    public ResponseEntity<List<CategoriaAggregation>> quantidadeProdutosPorCategoria() {
-        return ResponseEntity.ok()
-                .body(produtoDocumentService.quantidadeProdutosPorCategoria());
-    }
-
-    @GetMapping(value = "/agregacoes/por-raridade") // TODO separar os endpoints em /busca e /agregacoes
-    public ResponseEntity<List<RaridadeAggregation>> quantidadeProdutosPorRaridade() {
-        return ResponseEntity.ok()
-                .body(produtoDocumentService.quantidadeProdutosPorRaridade());
-    }
-
-    @GetMapping(value = "agregacoes/preco-medio") // TODO separar os endpoints em /busca e /agregacoes
-    public ResponseEntity<PrecoMedioAggregation> precoMedioProdutos() {
-        return ResponseEntity.ok()
-                .body(produtoDocumentService.precoMedioProdutos());
-    }
-
-    @GetMapping(value = "/agregacoes/faixas-preco") // TODO separar os endpoints em /busca e /agregacoes
-    public ResponseEntity<List<FaixaPreco>> agruparEmFaixaPreco() {
-        return ResponseEntity.ok()
-                .body(produtoDocumentService.agruparEmFaixaPreco());
     }
 }
