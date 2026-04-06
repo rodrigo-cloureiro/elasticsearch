@@ -6,6 +6,8 @@ import br.com.rodrigo.elasticsearch.dto.PrecoMedioAggregation;
 import br.com.rodrigo.elasticsearch.dto.RaridadeAggregation;
 import br.com.rodrigo.elasticsearch.model.ProdutoDocument;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -18,6 +20,42 @@ public class ProdutoDocumentServiceTest {
 
     @Autowired
     private ProdutoDocumentService service;
+
+    @ParameterizedTest
+    @CsvSource(value = {
+            "nome, Espada",
+            "descricao, norte",
+    })
+    void searchByFieldMatchTest(String field, String term) {
+        List<ProdutoDocument> result = service.searchByFieldMatch(field, term);
+
+        assertFalse(result.isEmpty());
+        assertTrue(result.stream().allMatch(r -> {
+            if (field.equalsIgnoreCase("nome")) {
+                return r.getNome().toLowerCase().contains(term.toLowerCase());
+            }
+            if (field.equalsIgnoreCase("descricao")) {
+                return r.getDescricao().toLowerCase().contains(term.toLowerCase());
+            }
+            return false;
+        }));
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {
+            "descricao, artefato raro",
+    })
+    void searchByExactPhraseTest(String field, String exactTerm) {
+        List<ProdutoDocument> result = service.searchByExactPhrase(field, exactTerm);
+
+        assertFalse(result.isEmpty());
+        assertTrue(result.stream().allMatch(r -> {
+            if (field.equalsIgnoreCase("descricao")) {
+                return r.getDescricao().toLowerCase().contains(exactTerm.toLowerCase());
+            }
+            return false;
+        }));
+    }
 
     @Test
     void buscarPorNome() {
