@@ -1,6 +1,7 @@
 package br.com.rodrigo.elasticsearch.service;
 
 import br.com.rodrigo.elasticsearch.dto.*;
+import br.com.rodrigo.elasticsearch.mapper.ProdutoDocumentMapper;
 import br.com.rodrigo.elasticsearch.model.ProdutoDocument;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.aggregations.AggregationRange;
@@ -310,7 +311,7 @@ public class ProdutoDocumentService {
                     .buckets()
                     .array()
                     .stream()
-                    .map(this::bucketToFaixaPreco)
+                    .map(ProdutoDocumentMapper::bucketToFaixaPreco)
                     .toList();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -323,36 +324,6 @@ public class ProdutoDocumentService {
                 AggregationRange.of(a -> a.from(100.0).to(300.0).key("De 100 a 300")),
                 AggregationRange.of(a -> a.from(300.0).to(700.0).key("De 300 a 700")),
                 AggregationRange.of(a -> a.from(700.0).key("Acima de 700"))
-        );
-    }
-
-    private ProdutoResponse toProdutoResponse(ProdutoDocument document) {
-        return new ProdutoResponse(
-                document.getNome(),
-                document.getDescricao(),
-                document.getCategoria(),
-                document.getRaridade(),
-                document.getPreco()
-        );
-    }
-
-    private FaixaPreco bucketToFaixaPreco(RangeBucket bucket) {
-        List<ProdutoResponse> produtos = bucket.aggregations()
-                .get("produtos")
-                .topHits()
-                .hits()
-                .hits()
-                .stream()
-                .map(Hit::source)
-                .filter(Objects::nonNull)
-                .map(source -> source.to(ProdutoDocument.class))
-                .map(this::toProdutoResponse)
-                .toList();
-
-        return new FaixaPreco(
-                bucket.key(),
-                bucket.docCount(),
-                produtos
         );
     }
 }
