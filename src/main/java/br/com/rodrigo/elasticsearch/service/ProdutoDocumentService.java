@@ -1,6 +1,7 @@
 package br.com.rodrigo.elasticsearch.service;
 
 import br.com.rodrigo.elasticsearch.dto.*;
+import br.com.rodrigo.elasticsearch.exception.ElasticsearchComunicacaoException;
 import br.com.rodrigo.elasticsearch.mapper.ProdutoDocumentMapper;
 import br.com.rodrigo.elasticsearch.model.ProdutoDocument;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
@@ -123,7 +124,7 @@ public class ProdutoDocumentService {
 
             return extractSources(response);
         } catch (IOException e) {
-            throw new RuntimeException();
+            throw new ElasticsearchComunicacaoException("Erro ao executar busca no Elasticsearch");
         }
     }
 
