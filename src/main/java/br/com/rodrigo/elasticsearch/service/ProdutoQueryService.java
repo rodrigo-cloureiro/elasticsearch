@@ -45,7 +45,7 @@ public class ProdutoQueryService {
         );
     }
 
-    public Query range(String field, double min, double max) {
+    public Query numberRange(String field, double min, double max) {
         return Query.of(q -> q
                 .range(r -> r
                         .number(n -> n
