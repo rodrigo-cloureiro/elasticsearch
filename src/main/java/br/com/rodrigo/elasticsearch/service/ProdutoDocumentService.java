@@ -24,97 +24,6 @@ public class ProdutoDocumentService {
     private final ElasticsearchClient client;
     private final ProdutoQueryService queryService;
 
-    /* public List<ProdutoDocument> searchByFieldMatch(String field, String term) {
-        try {
-            SearchResponse<ProdutoDocument> response = client.search(s -> s
-                    .query(q -> q
-                            .match(m -> m
-                                    .field(field)
-                                    .query(term)
-                            )
-                    ), ProdutoDocument.class
-            );
-
-            return extractSources(response);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    } */
-
-    /* public List<ProdutoDocument> searchByExactPhrase(String field, String exactTerm) {
-        try {
-            SearchResponse<ProdutoDocument> response = client.search(s -> s
-                    .query(q -> q
-                            .matchPhrase(mp -> mp
-                                    .field(field)
-                                    .query(exactTerm)
-                            )
-                    ), ProdutoDocument.class
-            );
-
-            return extractSources(response);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    } */
-
-    /* public List<ProdutoDocument> searchByFieldWithFuzziness(String field, String term) {
-        try {
-            SearchResponse<ProdutoDocument> response = client.search(s -> s
-                    .query(q -> q
-                            .fuzzy(f -> f
-                                    .field(field)
-                                    .value(term)
-                                    .fuzziness("AUTO")
-                            )
-                    ), ProdutoDocument.class
-            );
-
-            return extractSources(response);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    } */
-
-    /* public List<ProdutoDocument> searchMultiMatch(List<String> fields, String term) {
-        try {
-            SearchResponse<ProdutoDocument> response = client.search(s -> s
-                    .query(q -> q
-                            .multiMatch(mm -> mm
-                                    .fields(fields)
-                                    .query(term)
-                            )
-                    ), ProdutoDocument.class
-            );
-
-            return extractSources(response);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    } */
-
-    /* public List<ProdutoDocument> searchByNumberRange(String field, double min, double max) {
-        try {
-            SearchResponse<ProdutoDocument> response = client.search(s -> s
-                    .query(q -> q
-                            .range(r -> r
-                                    .number(n -> n
-                                            .field(field)
-                                            .gte(min)
-                                            .lte(max)
-                                    )
-                            )
-                    ), ProdutoDocument.class
-            );
-
-            return extractSources(response);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    } */
-
-    /* ************************************************************************************************************** */
-
     private List<ProdutoDocument> search(Query query) {
         try {
             SearchResponse<ProdutoDocument> response = client.search(s -> s
@@ -145,7 +54,7 @@ public class ProdutoDocumentService {
     }
 
     public List<ProdutoDocument> searchByNumberRange(String field, double min, double max) {
-        return search(queryService.range(field, min, max));
+        return search(queryService.numberRange(field, min, max));
     }
 
     private List<ProdutoDocument> extractSources(SearchResponse<ProdutoDocument> response) {
@@ -156,9 +65,8 @@ public class ProdutoDocumentService {
                 .toList();
     }
 
-    /* ************************************************************************************************************** */
+    // ============================================================================================================== \\
 
-    // NEW => OK ==> TESTAR
     public List<ProdutoDocument> buscarPorNome(String nome) {
         try {
             SearchResponse<ProdutoDocument> response = client.search(s -> s
@@ -180,7 +88,6 @@ public class ProdutoDocumentService {
         }
     }
 
-    // NEW => OK ==> TESTAR
     public List<ProdutoDocument> buscarPorDescricao(String descricao) {
         try {
             SearchResponse<ProdutoDocument> response = client.search(s -> s
@@ -202,7 +109,6 @@ public class ProdutoDocumentService {
         }
     }
 
-    // NEW => OK ==> TESTAR
     public List<ProdutoDocument> buscarPorFraseExata(String descricaoExata) {
         try {
             SearchResponse<ProdutoDocument> response = client.search(s -> s
@@ -224,7 +130,6 @@ public class ProdutoDocumentService {
         }
     }
 
-    // NEW => OK ==> TESTAR
     public List<ProdutoDocument> buscarPorNomeComTolerancia(String nome) {
         try {
             SearchResponse<ProdutoDocument> response = client.search(s -> s
@@ -247,7 +152,6 @@ public class ProdutoDocumentService {
         }
     }
 
-    // NEW => OK ==> TESTAR
     public List<ProdutoDocument> buscarPorNomeEDescricao(String termo) {
         try {
             SearchResponse<ProdutoDocument> response = client.search(s -> s
@@ -270,7 +174,7 @@ public class ProdutoDocumentService {
         }
     }
 
-    // NEW => TODO
+    // REFACTOR => TODO
     public List<ProdutoDocument> buscarPorDescricaoECategoria(String descricao, String categoria) {
         try {
             SearchResponse<ProdutoDocument> response = client.search(s -> s
@@ -302,7 +206,6 @@ public class ProdutoDocumentService {
         }
     }
 
-    // NEW => OK ==> TESTAR
     public List<ProdutoDocument> buscarPorFaixaPreco(double min, double max) {
         try {
             SearchResponse<ProdutoDocument> response = client.search(s -> s
@@ -333,7 +236,7 @@ public class ProdutoDocumentService {
         }
     }
 
-    // NEW => TODO
+    // REFACTOR => TODO
     public List<ProdutoDocument> buscaCombinada(String categoria, String raridade, double min, double max) {
         TermQuery categoriaTermQuery = TermQuery.of(t -> t.field("categoria").value(categoria));
         TermQuery raridadeTermQuery = TermQuery.of(t -> t.field("raridade").value(raridade));
@@ -363,7 +266,7 @@ public class ProdutoDocumentService {
         }
     }
 
-    // NEW => TODO
+    // REFACTOR => TODO
     public List<CategoriaAggregation> quantidadeProdutosPorCategoria() {
         try {
             SearchResponse<ProdutoDocument> response = client.search(s -> s
@@ -390,7 +293,7 @@ public class ProdutoDocumentService {
         }
     }
 
-    // NEW => TODO
+    // REFACTOR => TODO
     public List<RaridadeAggregation> quantidadeProdutosPorRaridade() {
         try {
             SearchResponse<ProdutoDocument> response = client.search(s -> s
@@ -417,7 +320,7 @@ public class ProdutoDocumentService {
         }
     }
 
-    // NEW => TODO
+    // REFACTOR => TODO
     public PrecoMedioAggregation precoMedioProdutos() {
         try {
             SearchResponse<ProdutoDocument> response = client.search(s -> s
@@ -437,7 +340,7 @@ public class ProdutoDocumentService {
         }
     }
 
-    // NEW => TODO
+    // REFACTOR => TODO
     public List<FaixaPreco> agruparEmFaixaPreco() {
         try {
             SearchResponse<ProdutoDocument> response = client.search(s -> s

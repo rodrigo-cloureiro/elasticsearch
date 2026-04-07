@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -56,6 +57,67 @@ public class ProdutoDocumentServiceTest {
             return false;
         }));
     }
+
+    @ParameterizedTest
+    @CsvSource(value = {
+            "nome, espdaa, espada",
+            "descricao, utilizdo, utilizado",
+    })
+    void searchByFieldWithFuzzinessTest(String field, String term, String correctTerm) {
+        List<ProdutoDocument> result = service.searchByFieldWithFuzziness(field, term);
+
+        assertFalse(result.isEmpty());
+        assertTrue(result.stream().allMatch(r -> {
+            if (field.equalsIgnoreCase("nome")) {
+                return r.getNome().toLowerCase().contains(correctTerm.toLowerCase());
+            }
+            if (field.equalsIgnoreCase("descricao")) {
+                return r.getDescricao().toLowerCase().contains(correctTerm.toLowerCase());
+            }
+            return false;
+        }));
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+            value = {
+                    "nome,descricao; Antiga"
+            },
+            delimiter = ';'
+    )
+    void searchMultiMatchTest(String strFields, String term) {
+        List<String> fields = Arrays.asList(strFields.split(","));
+        List<ProdutoDocument> result = service.searchMultiMatch(fields, term);
+
+        assertFalse(result.isEmpty());
+        assertTrue(result.stream().allMatch(r ->
+                fields.stream().anyMatch(field -> {
+                    if (field.equalsIgnoreCase("nome")) {
+                        return r.getNome().toLowerCase().contains(term.toLowerCase());
+                    }
+                    if (field.equalsIgnoreCase("descricao")) {
+                        return r.getDescricao().toLowerCase().contains(term.toLowerCase());
+                    }
+                    return false;
+                })
+        ));
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {
+            "preco, 100, 150",
+            "preco, 100, 250"
+    })
+    void searchByNumberRangeTest(String field, double min, double max) {
+        List<ProdutoDocument> result = service.searchByNumberRange(field, min, max);
+
+        assertFalse(result.isEmpty());
+        assertTrue(result.stream().allMatch(r ->
+                r.getPreco() >= min && r.getPreco() <= max)
+        );
+    }
+
+    // ============================================================================================================== \\
 
     @Test
     void buscarPorNome() {
