@@ -23,7 +23,7 @@ public class ProdutoDocumentSearchController {
             @RequestParam(name = "termo") String termo
     ) {
         return ResponseEntity.ok()
-                .body(produtoDocumentService.searchByFieldMatch("nome", termo));
+                .body(produtoDocumentService.buscarPorNome(termo));
     }
 
     @GetMapping(value = "/descricao")
@@ -31,34 +31,34 @@ public class ProdutoDocumentSearchController {
             @RequestParam(name = "termo") String termo
     ) {
         return ResponseEntity.ok()
-                .body(produtoDocumentService.searchByFieldMatch("descricao", termo));
+                .body(produtoDocumentService.buscarPorDescricao(termo));
     }
 
     @GetMapping(value = "/frase")
     public ResponseEntity<List<ProdutoDocument>> buscarPorFraseExata(
-            @RequestParam(name = "campo") String campo,
+            // @RequestParam(name = "campo") String campo,
             @RequestParam(name = "termo") String termo
     ) {
         return ResponseEntity.ok()
-                .body(produtoDocumentService.searchByExactPhrase(campo, termo));
+                .body(produtoDocumentService.buscarPorFraseExata(termo));
     }
 
     @GetMapping(value = "/fuzzy")
     public ResponseEntity<List<ProdutoDocument>> buscarPorNomeComTolerancia(
-            @RequestParam(value = "campo") String campo,
+            // @RequestParam(value = "campo") String campo,
             @RequestParam(value = "termo") String termo
     ) {
         return ResponseEntity.ok()
-                .body(produtoDocumentService.searchByFieldWithFuzziness(campo, termo));
+                .body(produtoDocumentService.buscarPorNomeComTolerancia(termo));
     }
 
     @GetMapping(value = "/multicampos")
     public ResponseEntity<List<ProdutoDocument>> buscarPorNomeEDescricao(
-            @RequestParam(name = "campos") List<String> campos,
+            // @RequestParam(name = "campos") List<String> campos,
             @RequestParam(name = "termo") String termo
     ) {
         return ResponseEntity.ok()
-                .body(produtoDocumentService.searchMultiMatch(campos, termo));
+                .body(produtoDocumentService.buscarPorNomeEDescricao(termo));
     }
 
     @GetMapping(value = "/com-filtro")
@@ -72,12 +72,12 @@ public class ProdutoDocumentSearchController {
 
     @GetMapping(value = "/faixa-preco")
     public ResponseEntity<List<ProdutoDocument>> buscarPorFaixaPreco(
-            @RequestParam(name = "campo") String campo,
+            // @RequestParam(name = "campo") String campo,
             @RequestParam(name = "min", defaultValue = "0") double min,
             @RequestParam(name = "max", defaultValue = "100") double max
     ) {
         return ResponseEntity.ok()
-                .body(produtoDocumentService.searchByNumberRange(campo, min, max));
+                .body(produtoDocumentService.buscarPorFaixaPreco(min, max));
     }
 
     @GetMapping(value = "/avancada")
