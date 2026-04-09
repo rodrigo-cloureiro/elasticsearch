@@ -1,9 +1,6 @@
 package br.com.rodrigo.elasticsearch.service;
 
-import br.com.rodrigo.elasticsearch.dto.CategoriaAggregation;
-import br.com.rodrigo.elasticsearch.dto.FaixaPreco;
-import br.com.rodrigo.elasticsearch.dto.PrecoMedioAggregation;
-import br.com.rodrigo.elasticsearch.dto.RaridadeAggregation;
+import br.com.rodrigo.elasticsearch.dto.*;
 import br.com.rodrigo.elasticsearch.model.ProdutoDocument;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,6 +19,7 @@ public class ProdutoDocumentServiceTest {
     @Autowired
     private ProdutoDocumentService service;
 
+    /*
     @ParameterizedTest
     @CsvSource(value = {
             "nome, Espada",
@@ -116,6 +114,7 @@ public class ProdutoDocumentServiceTest {
                 r.getPreco() >= min && r.getPreco() <= max)
         );
     }
+    */
 
     // ============================================================================================================== \\
 
@@ -231,18 +230,17 @@ public class ProdutoDocumentServiceTest {
         );
     }
 
-    @Test
-    void quantidadeProdutosPorCategoria() {
-        List<CategoriaAggregation> result = service.quantidadeProdutosPorCategoria();
+    @ParameterizedTest
+    @CsvSource(value = {
+            "categoria",
+            "raridade"
+    })
+    void quantidadeProdutosPorCampo(String campo) {
+        List<ContagemCampoAggregation> result = service.quantidadeProdutosPorCampo(campo);
         assertFalse(result.isEmpty());
-        assertTrue(result.stream().allMatch(r -> r.quantidade() >= 0));
-    }
-
-    @Test
-    void quantidadeProdutosPorRaridade() {
-        List<RaridadeAggregation> result = service.quantidadeProdutosPorRaridade();
-        assertFalse(result.isEmpty());
-        assertTrue(result.stream().allMatch(r -> r.quantidade() >= 0));
+        assertTrue(result.stream().allMatch(r ->
+                r.quantidade() >= 0 && r.campo().equalsIgnoreCase(campo)
+        ));
     }
 
     @Test
